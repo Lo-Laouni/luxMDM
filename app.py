@@ -17,7 +17,8 @@ DB_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}
     hostname="loiclaouni.mysql.pythonanywhere-services.com",
     databasename="loiclaouni$luxdb",
 )
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
+DB_URI2 = "mysql://root:luxmdm@localhost/luxmdm"
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI2
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 Bootstrap(app)
 luxdb = SQLAlchemy(app)
@@ -57,7 +58,7 @@ def newDevice():
     handler = userTable(received[0], received[1], received[2])
     luxdb.session.add(handler)
     luxdb.session.commit()
-    return jsonify({'data':data}), 201
+    return jsonify({'data': data}), 201
 
 
 @app.route('/')
@@ -95,16 +96,18 @@ def sysmon():
 
 
 @app.route('/manage.html', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def manage():
-    global dev
+    # global dev
     form = searchManage(request.form)
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST':
         device = deviceTable.query.filter_by(deviceUser=form.deviceUser.data).first()
         if device:
-            dev = device
-            return dev
-    return render_template('manage.html')
+            owner = device.deviceUser
+            serial = device.deviceSerialNum
+            date = device.activationDate
+            return render_template('manage.html', owner=owner, serial=serial, date=date)
+    return render_template('manage.html', form=form, owner=None, serial=None, date=None)
 
 
 @app.route("/logout")
@@ -161,7 +164,7 @@ class deviceTable(luxdb.Model):
     __tablename__ = 'devices'
     deviceSerialNum = luxdb.Column('Serial Number', luxdb.Unicode, primary_key=True)
     deviceOS = luxdb.Column('Operating System', luxdb.Unicode, nullable=False)
-    activationDate = luxdb.Column('Provision_Date', luxdb.Date, nullable=False)
+    activationDate = luxdb.Column('Provision_Date', luxdb.Date, nullable=True)
     deviceUser = luxdb.Column('device_user', luxdb.Unicode, luxdb.ForeignKey(userTable.matriculation), nullable=False)
 
     def __init__(self, deviceserialnum, deviceos, deviceuser):

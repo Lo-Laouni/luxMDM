@@ -47,13 +47,13 @@
               <div role="tabpanel" class="tab-pane fade in active" id="devdecom">
                   <h1>Device Decommission</h1>
                   <div id="searchinput">
-                      <form class="navbar-form navbar-left" role="search">
+                      <form class="navbar-form navbar-left" action="/manage.html" method="POST">
                           <div class="form-group">
                             <div class="col-lg-20">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search by Device Owner...">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button">
+                                        <button class="btn btn-default" type="submit">
                                             <span class="glyphicon glyphicon-search" aria-hidden="true">
                                             </span>
                                         </button>
@@ -69,11 +69,13 @@
                         <div class="box-content">
                             <h2 class="tag-title">Device Information</h2>
                             <hr />
+                            {% if owner %}
                             <ul>
-                                <li style="bold"><h4>Device Owner:</h4></li>
-                                <li style="bold"><h4>Device Serial:</h4></li>
-                                <li style="bold"><h4>Device provision date:</h4></li>
+                                <li style="bold"><h4>Device Owner: {{ owner }}</h4></li>
+                                <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
+                                <li style="bold"><h4>Device provision date: {{date}}</h4></li>
                             </ul>
+                            {% endif %}
                             <br />
                             <button type="button" class="btn btn-default btn-danger">Decomission NOW</button>
                         </div>
@@ -106,9 +108,9 @@
                             <h2 class="tag-title">Device Information</h2>
                             <hr />
                             <ul>
-                                <li style="bold"><h4>Device Owner:</h4></li>
-                                <li style="bold"><h4>Device Serial:</h4></li>
-                                <li style="bold"><h4>Device provision date:</h4></li>
+                                <li style="bold"><h4>Device Owner: {{owner}}</h4></li>
+                                <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
+                                <li style="bold"><h4>Device provision date: {{date}}</h4></li>
                             </ul>
                             <br />
                             <button type="button" class="btn btn-default btn-danger">Wipe Device NOW</button>
@@ -121,5 +123,11 @@
       </section>
 
     </div>
+
+<script>
+    function myfunc(){
+    document.getElementById("owner").style.display="block"
+    }
+</script>
 
 {% endblock %}
