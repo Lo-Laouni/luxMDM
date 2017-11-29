@@ -1,0 +1,134 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='sidebar.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='sidebar1.js')}}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+      <a class="navbar-brand" href="#">LuxMDM</a>
+      <div class="navbar-header navbar-right">
+          <ul class="nav navbar-nav">
+              <p class="navbar-text">Hello {{ name }}</p>
+              <li><a href="{{ url_for('logout') }}">Logout</a> </li>
+          </ul>
+      </div>
+
+  </div>
+</nav>
+    <div class="container">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#">Device Monitoring</a></li>
+            <li role="presentation"><a href="sysmon.html">System Monitoring</a></li>
+            <li role="presentation"><a href="manage.html">Asset Management</a></li>
+        </ul>
+    </div>
+<div id="wrapper" class="active">
+
+      <!-- Sidebar -->
+            <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+      <ul id="sidebar_menu" class="sidebar-nav">
+           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu</a></li>
+      </ul>
+        <ul class="sidebar-nav" id="sidebar">
+          <li role="presentation" class="active"><a href="#regdev" aria-controls="regdev" role="tab" data-toggle="tab">Registered Devices</a></li>
+          <li role="presentation"><a href="#devapp" aria-controls="devapp" role="tab" data-toggle="tab">Devices Applications</a></li>
+        </ul>
+      </div>
+
+      <!-- result display section -->
+      <section style="padding:20px">
+          <div class="tab-content">
+              <div class="container">
+                  <form class="navbar-form navbar-right" role="search">
+                      <div class="form-group">
+                        <div class="col-lg-12">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search by Device Owner...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <span class="glyphicon glyphicon-search" aria-hidden="true">
+                                        </span>
+                                    </button>
+                                </span>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                      </div><!-- /.row -->
+                  </form>
+              </div>
+              <div role="tabpanel" class="tab-pane fade in active" id="regdev">
+                  <table class="table table-hover" id="device-table">
+                      <tr class="active">
+                          <th>Device SerialNumber</th>
+                          <th>Operating System</th>
+                          <th>Owner</th>
+                          <th>Device Status</th>
+                      </tr>
+                      {% for n in range(rows) %}
+                          <tr>
+                              <td>{{ dev[n][0] }}</td>
+                              <td>{{ dev[n][1] }}</td>
+                              <td>{{ dev[n][2] }}</td>
+                              <td><a href="#myModal" data-toggle="modal"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a></td>
+                          </tr>
+                      {% endfor %}
+                  </table>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="devapp">
+                  <div align="left">
+                      <img src="{{ url_for('static', filename='reportA.png') }}">
+                  </div>
+                  <div align="right">
+                      <img src="{{ url_for('static', filename='reportB.png') }}">
+                  </div>
+              </div>
+          </div>
+      </section>
+
+</div>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Device full Information</h4>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li>Device Serial Number: </li>
+                    <li>Device Operating system: </li>
+                    <li>Device Owner: </li>
+                    <li>Device Enrollment Date: </li>
+                </ul>
+                <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Manage Device</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+
+    $('.device-table').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+});
+</script>
+
+{% endblock %}
