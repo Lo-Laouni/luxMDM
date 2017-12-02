@@ -53,7 +53,7 @@ api.add_resource(clientData, '/api/v1/luxmdm')
 def newDevice():
     if not request.json:
         abort(400)
-    data = {'data':request.json['data']}
+    data = {'data': request.json['data']}
     received = data['data']
     handler = userTable(received[0], received[1], received[2])
     luxdb.session.add(handler)
@@ -92,22 +92,44 @@ def devicemon():
 @app.route('/sysmon.html')
 @login_required
 def sysmon():
-    return render_template('sysmon.html')
+    return render_template('sysmon.html', name=current_user.uname)
 
 
 @app.route('/manage.html', methods=['GET', 'POST'])
 @login_required
 def manage():
     # global dev
-    form = searchManage(request.form)
+    return render_template('manage.html', owner=None, serial=None, date=None, name=current_user.uname)
+
+
+@app.route('/manage.html/devdecom', methods=['GET', 'POST'])
+@login_required
+def devicedecom():
     if request.method == 'POST':
-        device = deviceTable.query.filter_by(deviceUser=form.deviceUser.data).first()
+        search = request.form.to_dict()
+        decoSearch = search['deco']
+        print(request.form.to_dict())
+        device = deviceTable.query.filter_by(deviceUser=decoSearch).first()
         if device:
             owner = device.deviceUser
             serial = device.deviceSerialNum
             date = device.activationDate
-            return render_template('manage.html', owner=owner, serial=serial, date=date)
-    return render_template('manage.html', form=form, owner=None, serial=None, date=None)
+            return render_template('manage.html', owner=owner, serial=serial, date=date, status=True, name=current_user.uname)
+
+
+@app.route('/manage.html/devwipe', methods=['GET', 'POST'])
+@login_required
+def devicewipe():
+    if request.method == 'POST':
+        search = request.form.to_dict()
+        print(request.form.to_dict())
+        wipeSearch = search['wipe']
+        device = deviceTable.query.filter_by(deviceUser=wipeSearch).first()
+        if device:
+            owner = device.deviceUser
+            serial = device.deviceSerialNum
+            date = device.activationDate
+            return render_template('manage.html', owner=owner, serial=serial, date=date, status=True, name=current_user.uname)
 
 
 @app.route("/logout")
@@ -180,4 +202,4 @@ class regdevTable(Table):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

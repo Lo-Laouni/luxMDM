@@ -12,7 +12,7 @@
       <a class="navbar-brand" href="#">LuxMDM</a>
       <div class="navbar-header navbar-right">
           <ul class="nav navbar-nav">
-              <p class="navbar-text">Hello {{ username }}</p>
+              <p class="navbar-text">Hello {{ name }}</p>
               <li><a href="#">Logout</a> </li>
           </ul>
       </div>
@@ -21,9 +21,9 @@
 </nav>
     <div class="container">
         <ul class="nav nav-tabs">
-            <li role="presentation"><a href="devicemon.html">Device Monitoring</a></li>
-            <li role="presentation"><a href="sysmon.html">System Monitoring</a></li>
-            <li role="presentation" class="active"><a href="#">Asset Management</a></li>
+            <li role="presentation"><a href="{{ url_for('devicemon') }}">Device Monitoring</a></li>
+            <li role="presentation"><a href="{{ url_for('sysmon') }}">System Monitoring</a></li>
+            <li role="presentation" class="active"><a href="{{ url_for('manage') }}">Asset Management</a></li>
         </ul>
     </div>
 <div id="wrapper" class="active">
@@ -47,11 +47,11 @@
               <div role="tabpanel" class="tab-pane fade in active" id="devdecom">
                   <h1>Device Decommission</h1>
                   <div id="searchinput">
-                      <form class="navbar-form navbar-left" action="/manage.html" method="POST">
+                      <form class="navbar-form navbar-left" action="{{ url_for('devicedecom') }}" method="POST">
                           <div class="form-group">
                             <div class="col-lg-20">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search by Device Owner...">
+                                    <input type="text" class="form-control" name="deco" placeholder="Search by Device Owner...">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit">
                                             <span class="glyphicon glyphicon-search" aria-hidden="true">
@@ -69,12 +69,12 @@
                         <div class="box-content">
                             <h2 class="tag-title">Device Information</h2>
                             <hr />
-                            {% if owner %}
-                            <ul>
-                                <li style="bold"><h4>Device Owner: {{ owner }}</h4></li>
-                                <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
-                                <li style="bold"><h4>Device provision date: {{date}}</h4></li>
-                            </ul>
+                            {% if status %}
+                                <ul>
+                                    <li style="bold"><h4>Device Owner: {{ owner }}</h4></li>
+                                    <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
+                                    <li style="bold"><h4>Device provision date: {{date}}</h4></li>
+                                </ul>
                             {% endif %}
                             <br />
                             <button type="button" class="btn btn-default btn-danger">Decomission NOW</button>
@@ -85,13 +85,13 @@
               <div role="tabpanel" class="tab-pane fade" id="devwipe">
                   <h1>Remote Device Wipe</h1>
                   <div id="searchinput2">
-                      <form class="navbar-form navbar-left" role="search">
+                      <form class="navbar-form navbar-left" action="{{ url_for('devicewipe') }}" method="post">
                           <div class="form-group">
                             <div class="col-lg-20">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search by Device Owner...">
+                                    <input type="text" class="form-control" name="wipe" placeholder="Search by Device Owner...">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button">
+                                        <button class="btn btn-default" type="submit">
                                             <span class="glyphicon glyphicon-search" aria-hidden="true">
                                             </span>
                                         </button>
@@ -107,11 +107,13 @@
                         <div class="box-content">
                             <h2 class="tag-title">Device Information</h2>
                             <hr />
-                            <ul>
-                                <li style="bold"><h4>Device Owner: {{owner}}</h4></li>
-                                <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
-                                <li style="bold"><h4>Device provision date: {{date}}</h4></li>
-                            </ul>
+                            {% if status %}
+                                <ul>
+                                    <li style="bold"><h4>Device Owner: {{ owner }}</h4></li>
+                                    <li style="bold"><h4>Device Serial: {{serial}}</h4></li>
+                                    <li style="bold"><h4>Device provision date: {{date}}</h4></li>
+                                </ul>
+                            {% endif %}
                             <br />
                             <button type="button" class="btn btn-default btn-danger">Wipe Device NOW</button>
                         </div>
